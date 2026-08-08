@@ -1,0 +1,5 @@
+Moongose helps in data modelling 
+Prim helps in data modelling 
+these are used to desigining a schema
+
+data moddleing is defining how may field you need for a feature or desigining a page 
