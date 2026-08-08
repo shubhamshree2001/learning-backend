@@ -1,0 +1,49 @@
+we will add modemon it is a dev dependeny which means it is used for development does not required in production
+We weill nodemon to solve one problem 
+for every changes we made we need to stop and restart the server to solve this issue we will add this package 
+
+now using 
+npm i -D nodemon 
+it will add it in package.json 
+now we also need to update the script so that it updates 
+
+whever we connect to database implement these two 
+1. use try catch or promise resolve
+2. use async await
+
+
+body-parser for middlewares // not it is by default in latest node js
+multer for uploading file 
+
+
+---middleware--
+middleware is used to check the request which is made by user before hitting the server for response
+suppose user hits weather data but in middleware we will i=check is the user has access token or not
+
+(err,req,res,next) --> these four are there --> next is used to check
+suppose there are mulitpe middleware in series to check so the next will keep passing to next middleware to verify
+
+
+-- utils---
+asyncHandler -- > higher order funciton? in js
+Higher order function is a function which can take function as a parameter and can return as well
+
+we also want to standardize the format of sending success response and error
+for that also we will create handles like apiErrorHandle and ApiSuccessHandler
+
+
+// read about server status code
+// learn what is there in data field in error object ??
+
+
+------------- : commands : ----------------
+
+npm init   
+touch app.js constants.js index.js   
+in src folder -> mkdir controllers db middlewares models routes utils  
+npm i mongoose express dotenv
+npm run start   
+npm start   
+npm run dev
+
+npm i cookie-parser cors
