@@ -32,10 +32,61 @@ we also want to standardize the format of sending success response and error
 for that also we will create handles like apiErrorHandle and ApiSuccessHandler
 
 
+---leanrning required
 // read about server status code
 // learn what is there in data field in error object ??
 
+//-- moongose Aggregation pipeline , Aggregation query 
+// it helps to write Aggregation query 
+// moongose Aggregation paginate v2 
+https://www.npmjs.com/package/mongoose-paginate-v2
+https://mongoosejs.com/docs/index.html
 
+In moongose we can write many middlewares we can inject our plugins as well
+moongose aggregate paginate is a plugin which we will inject on our schema
+
+//-- 
+bcrypt or bcryptjs both are same both have almost same funcitonality 
+currently we are using bcrypt
+this library helps to hash our passwords
+this helps to encrypt and decrypt our password
+--
+
+//-- jwt  or json web token
+//https://www.jwt.io/ -- website to see token
+Jwt is a bearer token 
+who bears it we assume that he is correct
+
+in a jwt token there are three things 
+first header 
+{
+    "alg" : "H526"
+    "typ" : "JWT"
+}
+second PAYLOAD data
+{
+    "name" : "john"
+    "iat" 5167848
+}
+third verify signature
+{
+    256 bit secret
+} secret base 64 encode
+
+
+-- so now we will discuss how to encrypt and decrypt 
+directly it is not possible to do it 
+so we need to use a hook that is from mongoose
+in mongoose middleware the is a hook called pre hook
+Pre miiddleware function are executed one after another , when each middleware calls NEXT
+so to understand, 
+As soon as a dota is going to be saved , just before that if a user a writter any call or a controller  to save data,
+just before that this hook can be run or we can put any code inside it and run. 
+We can manipulate the data , then we can save 
+so we can encryt our password then save 
+
+
+model link : https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj
 ------------- : commands : ----------------
 
 npm init   
@@ -47,3 +98,5 @@ npm start
 npm run dev
 
 npm i cookie-parser cors
+npm i mongoose-paginate-v2
+npm i bcrypt jsonwebtoken
