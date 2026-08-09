@@ -86,6 +86,95 @@ We can manipulate the data , then we can save
 so we can encryt our password then save 
 
 
+///---- Cloudnary -- //
+
+-- for file upload there are two packages
+-- multer, express-fileupload
+https://github.com/expressjs/multer
+https://www.npmjs.com/package/express-fileupload
+
+
+
+
+// ---- HTTP vs HTTPS -----//
+HTTPS - it adds a level of security to data, suppose a data is send abc then it adds a key to it 
+so that it becomes encrypted. The data non redable normally and it can be readable at server or at client side
+In between it should not be readable 
+// basically all three to know the resource/or get the address
+URL : Uniform resource locator --> the location of the text
+URI : uniform resource identifier 
+URN : uniforn resource name 
+
+
+what are HTTP headers?
+the metaadata which is sent --> key value which is sent in request and response
+
+use of HTTP headers?
+1. caching -> when the request comes, if we can use any data from the cache database
+2. authentication -> beare token, session cookies, session values, refresh token, cookies
+3. manage state -> state of user (guest user/ logged in user)
+
+x-prefix is deprecated from headers after 2012 
+
+Request headers -> from client
+Response headers  -> from server
+Representation headers -> encoding/compression [when to send large data]
+Payload headers -> data
+
+
+Most common Headers :
+Accept : application/json' -> type of data which you accept
+user-Agent --> it tells from which application request has come (postman, browser, safari)
+authorization -> bearer token
+content-type -> type of data like images/pdf 
+cookie -> {key -value} pair for cookie details
+cache-control -> after how much time we should expire the data
+
+//these are basicaly what things you are allowing
+cors:
+Access Control Allow Origin 
+Access Control Allow Credential
+Access Control Allow Method
+
+security:
+Cross origin embedder policy
+cross origin opener policy
+content security policy
+x-xss protection
+
+
+HTTP Methods (operations)
+1. get -> to retrieve a resource
+2. HEAD -> no message body (response header only) --> to see cache control , or user headers
+3. OPTIONS -> what operations (get/put/post) are available at a endpoint
+4. TRACE -> loopback test (get same data) --> some time resources are behind the proxy , so to check from all which proxy request is passing by, or coming by . to debug it is taking to much time , hopping time 
+5. DELETE --> remove a resource
+6. PUT --> replace the resource 
+7. POST --> interact with resource (add the resource)
+8. PATCH --> change the particular part in that resource
+
+
+HTTP STATUS code
+. 1xx  informational
+. 2xx  success
+. 3xx  redirection
+. 4xx  client error 
+. 5xx  server error
+
+100 --> continue
+102 --> procesing
+200 --> ok
+201 --> created
+202  --> accepted 
+307 --> temproray redirect 
+308 --> permannet redirect 
+400 --> Bad request 
+401 --> unauthorized 
+402 --> payment required
+404 --> Not found
+500 --> internal server error 
+504 --> gateway timeout 
+
 model link : https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj
 ------------- : commands : ----------------
 
