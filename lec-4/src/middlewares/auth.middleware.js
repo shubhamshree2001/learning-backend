@@ -20,9 +20,7 @@ export const verifyJwtToken = asyncHandler(async (req, res, next) => {
      if(!user){
         throw new ApiError(401, "invalid token");
      }
-     // ---- discuss about frontend 
-
-
+ 
       // as we get the user , 
       //we will assign this user to the request object
       // so that we can use this user in the next middleware or controller
