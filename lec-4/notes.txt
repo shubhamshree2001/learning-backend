@@ -176,6 +176,7 @@ HTTP STATUS code
 504 --> gateway timeout 
 
 model link : https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj
+repo link : https://github.com/hiteshchoudhary/chai-backend/tree/main
 ------------- : commands : ----------------
 
 npm init   
