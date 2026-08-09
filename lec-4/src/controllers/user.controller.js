@@ -208,19 +208,20 @@ const updateAccessToken = asyncHandler(async (req, res) => {
             throw new ApiError(401, "Refresh token is not valid");
         }
     
-        const { newAccessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
     
         const cookieOptions = {
             httpOnly: true,
             secure: true,
         };
     
-        return res.status(200).cookie("accessToken", newAccessToken, cookieOptions)
-            .cookie("refreshToken", newRefreshToken, cookieOptions)
-            .json(new ApiResponse(200, { accessToken: newAccessToken, refreshToken: newRefreshToken }, "Access token updated successfully"));
+        return res.status(200).cookie("accessToken", accessToken, cookieOptions)
+            .cookie("refreshToken", refreshToken, cookieOptions)
+            .json(new ApiResponse(200, { accessToken, refreshToken }, "Access token updated successfully"));
     
     } catch (error) {
         throw new ApiError(401, error?.message || "Unauthorized");
-    }});
+    }
+});
 
 export { registerUser, loginUser, logoutUser, updateAccessToken };  
