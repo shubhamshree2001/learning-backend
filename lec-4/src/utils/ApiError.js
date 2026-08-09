@@ -23,4 +23,4 @@ class ApiError extends Error {
 // learn what is there in data field in error object ??
 
 
-export default ApiError;
+export { ApiError }

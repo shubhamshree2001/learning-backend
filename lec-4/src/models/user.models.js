@@ -52,13 +52,12 @@ const userSchema = new Schema({
 //second thing is async function() {} this is a function that is going to be executed before the data is saved in the database
 //it is a callback function but dont write it like ()=>{}
 //third thing is async function() {} because it takes time to encrypt and decrypt the password 
-// next is used in a middleware to move to the next middleware or to the next function or to the next line of code
-userSchema.pre("save", async function(next) {
+// in mongoose 7+, async middleware should NOT use next() — just return when done
+userSchema.pre("save", async function() {
     // so that encryption is not done again and again if the password is not modified
     // as userscheme has lot of other field 
-    if(!this.isModified("password")) return next();
+    if(!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password, 10);
-    next();
 });
 
 // now we will create some methods so that we can verify the password when user sends and we save the encrypted one
