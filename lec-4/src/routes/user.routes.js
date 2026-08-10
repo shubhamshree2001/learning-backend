@@ -1,5 +1,5 @@
 import {Router} from "express"; // Router is a class in express
-import { registerUser, loginUser, logoutUser, updateAccessToken, changeCurrentPassword,getUserProfile, updateUserProfile, updateUserAvatar} from "../controllers/user.controller.js";
+import { registerUser, loginUser, logoutUser, updateAccessToken, changeCurrentPassword,getUserProfile, updateUserProfile, updateUserAvatar, getUserChannelProfile, getWatchHistory} from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwtToken } from "../middlewares/auth.middleware.js";
 
@@ -28,5 +28,11 @@ router.route("/get-user-profile").get(verifyJwtToken, getUserProfile);
 router.route("/update-user-profile").patch(verifyJwtToken, updateUserProfile);
 
 router.route("/avatar").patch(verifyJwtToken, upload.single("avatar"), updateUserAvatar)
+
+// here we are taking from url the username of the channel we want to get the profile of
+// after colon :username is the username of the channel we want to get the profile of
+router.route("/c/:username").get(verifyJwtToken, getUserChannelProfile)
+
+router.route("/watch-history").get(verifyJwtToken, getWatchHistory)
 
 export default router;

@@ -414,4 +414,79 @@ if(channel.length === 0){
 return res.status(200).json(new ApiResponse(200, channel[0], "User channel profile fetched successfully"));
 });
 
-export { registerUser, loginUser, logoutUser, updateAccessToken, changeCurrentPassword, getUserProfile, updateUserProfile, updateUserAvatar, getUserChannelProfile };   
+
+// now we need to know the watch history of a user 
+// so here we need to join the watch history collection with the users collection
+// and get the videos that the user has watched
+// we will use aggregation pipeline to get the watch history of a user
+// here we will use $lookup to join the watch history collection with the users collection
+// here we will $lookup to join the video  to which user/channel has uploaded
+// it will be a nested lookup
+
+const getWatchHistory = asyncHandler(async (req, res) => {
+   //req.user?._id
+   // it gives id of the user which is in string format 
+   // but in mongodb id is in object id format
+   // so we are using moongose it converts req.user?._id to object id format in the back by it self
+
+   // but inside aggregation pipeline we use object id format not string format
+   // in aggregationppeline req.user?._id is not converted to object id format₹ by moongose it self
+   // so we are using ObjectId(req.user?._id) to convert the string format to object id format
+   const user = await User.aggregate([
+    {
+        $match: {
+            _id: new mongoose.Types.ObjectId(req.user?._id)
+        }
+    },
+    {
+        // here we are in user collection and we want to get watchHistory of this user
+        $lookup: {
+            from: "videos",
+            localField: "watchHistory", // local field of user collection which is watchHistory
+            foreignField: "_id", // id of video created by mongodb
+            as: "watchHistory", 
+            // now to get owner of this video we need below pipeline to be added
+            // here we are in video collection and we want to get owner of this video
+            pipeline: [
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "owner", // local field of video collection which is owner
+                        foreignField: "_id", // id of owner created by mongodb in user collection
+                        as: "owner",
+                        //here we dont want all the details of owner user
+                        pipeline: [
+                            {
+                                $project: {
+                                    //_id: 1,
+                                    fullName: 1,
+                                    username: 1,
+                                    avatar: 1
+                                }
+                            }
+                        ]   
+                    }
+                } ,  
+                //now we want to structure the owner object in the response for frontend 
+                // as it is an array of objects so we use $first to get the first object
+                {
+                    $addFields: {
+                        owner: {
+                            $first: "$owner"
+                        }
+                    }
+                }
+            ]   
+        },
+
+    }
+]);
+
+if(user.length === 0){
+    throw new ApiError(404, "User not found");
+}
+
+return res.status(200).json(new ApiResponse(200, user[0].watchHistory, "Watch history fetched successfully"));
+});
+
+export { registerUser, loginUser, logoutUser, updateAccessToken, changeCurrentPassword, getUserProfile, updateUserProfile, updateUserAvatar, getUserChannelProfile, getWatchHistory };   
