@@ -158,11 +158,17 @@ const logoutUser = asyncHandler(async (req, res) => {
     // remove the cookies
     // send the response
 
-    await User.findByIdAndUpdate(req.user._id, 
-        {
-            $set:{
-                refreshToken: undefined }}, 
-        {new: true}); // new: true is used to return the updated user
+    await User.findByIdAndUpdate(req.user._id,  {
+        // setting refresh tken to undefined is not a good practice
+        // so we are using $unset to remove the refresh token from the database
+        //     $set:{
+        //         refreshToken: undefined }}, 
+        // {new: true}); // new: true is used to return the updated user
+
+        $unset: {
+            refreshToken: 1 // 1 is used to remove the field from the database
+        }
+    }, {new: true});
 
         const cookieOptions = {
             httpOnly: true,

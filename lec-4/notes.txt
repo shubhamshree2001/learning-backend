@@ -186,6 +186,12 @@ repo link : https://github.com/hiteshchoudhary/chai-backend/tree/main
 
 https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro
 https://www.mongodb.com/docs/manual/aggregation/  -- aggregation pipeline
+
+written aggregation pipeline for sunbscriber/subscribedTo and watchistory in user controller
+
+
+mongooseAggregatePaginate --> it is for implementing pagination
+
 pulsemcp.com
 mcpappstore
 
