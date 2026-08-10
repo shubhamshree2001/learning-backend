@@ -175,8 +175,19 @@ HTTP STATUS code
 500 --> internal server error 
 504 --> gateway timeout 
 
+
+// multer middleware
+-- request.files --> for multiple file
+--request.file --> for one file 
+
 model link : https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj
 repo link : https://github.com/hiteshchoudhary/chai-backend/tree/main
+
+https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro
+pulsemcp.com
+mcpappstore
+
+
 ------------- : commands : ----------------
 
 npm init   

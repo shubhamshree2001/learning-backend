@@ -224,4 +224,109 @@ const updateAccessToken = asyncHandler(async (req, res) => {
     }
 });
 
-export { registerUser, loginUser, logoutUser, updateAccessToken };  
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+    // req body
+    // find the user
+    // check the old password
+    // change the password
+    // send the response
+
+    const { currentPassword, newPassword } = req.body;
+
+    if(!currentPassword || !newPassword){
+        throw new ApiError(400, "All fields are required");
+    }
+
+    // through middleware we get this req.user?._id
+    const user = await User.findById(req.user?._id);
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
+    if(!isPasswordCorrect){
+        throw new ApiError(400, "Invalid password");
+    }
+
+    user.password = newPassword;
+    await user.save({validateBeforeSave: false}); // validateBeforeSave: false is used to bypass the validation of the user model
+
+    return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"));
+});
+
+const getUserProfile = asyncHandler(async (req, res) => {
+    // req body
+    // find the user
+    // send the response
+    // req.user?._id) this we get through middleware, auth middleware return this user object
+
+    return res.status(200).json(new ApiResponse(200, req.user, "User profile fetched successfully"));
+});
+
+const updateUserProfile = asyncHandler(async (req, res) => {
+    // req body
+    // find the user
+    // update the user
+    // send the response
+    // if we have to update some file or photo keep the separte end point for it 
+
+    const { fullName, email } = req.body;
+
+    if(!fullName || !email){
+        throw new ApiError(400, "All fields are required");
+    }
+
+    // if we pass new true then it will return the updated user
+    const user = await User.findByIdAndUpdate(req.user?._id, {
+        $set: {
+            fullName,
+            email
+        }
+    }, {new: true}).select("-password -refreshToken");
+
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, user, "User profile updated successfully"));
+});
+
+const updateUserAvatar = asyncHandler(async (req, res) => {
+    // req body
+    // check the file is uploaded or not to cloudinary
+    // find the user
+    // delete the old avatar from cloudinary
+    // update the user
+    // send the response
+    // if we have to update some file or photo keep the separte end point for it 
+
+    const avatarLocalPath = req.file?.path;
+    if(!avatarLocalPath){
+        throw new ApiError(400, "Avatar is required");
+    }
+ 
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    if(!avatar.url){
+        throw new ApiError(400, "Failed to upload avatar");
+    }
+
+    const oldAvatar = req.user?.avatar;
+    if(oldAvatar){
+        await deleteFromCloudinary(oldAvatar);
+    }
+
+
+    const user = await User.findByIdAndUpdate(req.user?._id, {
+        $set: {
+            avatar: avatar.url
+        }
+    }, {new: true}).select("-password -refreshToken");
+
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, user, "User avatar updated successfully"));
+});
+
+export { registerUser, loginUser, logoutUser, updateAccessToken, changeCurrentPassword, getUserProfile, updateUserProfile, updateUserAvatar };  

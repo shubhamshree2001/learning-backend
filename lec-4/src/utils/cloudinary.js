@@ -38,4 +38,46 @@ const uploadOnCloudinary = async (localFilePath) => {
     }
 }
 
-export { uploadOnCloudinary }
+// extract public_id from a cloudinary url
+// eg: https://res.cloudinary.com/<cloud>/image/upload/v123/folder/file.jpg -> folder/file
+const getPublicIdFromUrl = (url) => {
+    if (!url) return null;
+
+    // if already a public_id (no http), return as is
+    if (!url.includes("cloudinary.com")) return url;
+
+    const parts = url.split("/");
+    const uploadIndex = parts.findIndex((part) => part === "upload");
+    if (uploadIndex === -1) return null;
+
+    // skip "upload" and optional version segment like v1234567890
+    let publicIdParts = parts.slice(uploadIndex + 1);
+    if (publicIdParts[0]?.startsWith("v") && /^v\d+$/.test(publicIdParts[0])) {
+        publicIdParts = publicIdParts.slice(1);
+    }
+
+    const publicIdWithExt = publicIdParts.join("/");
+    return publicIdWithExt.replace(/\.[^/.]+$/, ""); // remove file extension
+};
+
+const deleteFromCloudinary = async (fileUrlOrPublicId) => {
+    try {
+        if (!fileUrlOrPublicId) return null;
+
+        const publicId = getPublicIdFromUrl(fileUrlOrPublicId);
+        if (!publicId) return null;
+
+        // destroy removes the asset from cloudinary
+        const response = await cloudinary.uploader.destroy(publicId, {
+            resource_type: "auto",
+        });
+
+        // response.result is "ok" when deleted, "not found" if missing
+        return response;
+    } catch (error) {
+        console.log("Error while deleting from cloudinary", error);
+        return null;
+    }
+};
+
+export { uploadOnCloudinary, deleteFromCloudinary }
