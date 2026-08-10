@@ -329,4 +329,89 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, user, "User avatar updated successfully"));
 });
 
-export { registerUser, loginUser, logoutUser, updateAccessToken, changeCurrentPassword, getUserProfile, updateUserProfile, updateUserAvatar };  
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+// to go on a channel profile we need to get the user id from the url
+const {username} = req.params;
+if(!username?.trim()){
+    throw new ApiError(400, "Username is required");
+}
+
+// const user = await User.findOne({username: username.toLowerCase()});
+// if(!user){
+//     throw new ApiError(404, "User not found");
+// }
+/// we will use aggregation pipeline to get the user channel profile
+// it will be array of objects
+const channel = await User.aggregate([
+    {
+        $match: {
+            username: username.toLowerCase()
+        }
+    },
+    // we will get the number of subscriber/followers of the channel
+    { 
+        $lookup: {  // it will join the subscriptions collection with the users collection
+            from: "subscriptions",
+            localField: "_id",
+            foreignField: "channel",
+            as: "subscribers"
+        }
+    },
+    //it will get number of channels I have subscribedto/following
+    {
+        $lookup: {  // it will join the subscriptions collection with the users collection
+            from: "subscriptions",
+            localField: "_id",
+            foreignField: "subscriber",
+            as: "subscribedTo"
+        }   
+    },
+    // now we have to add fields for total subscribers and total channels I have subscribed to
+    // think it like a instagram profile 
+    // totalSubscriber as a total number of followers
+    //totalSubscribedTo as a total number of following
+    //isSubscribed as a boolean value to know if I am following this user or not
+    {
+        $addFields: {
+            totalSubscribers: { $size: "$subscribers" }, // it will give you the number of subscribers
+            totalSubscribedTo: { $size: "$subscribedTo" },// it will give you the number of channels I have subscribed to
+            // now we want to know I as user subscribed to this channel or not 
+            isSubscribed: { 
+                 $cond: {
+                    // $in can be used to check if a value is in an array or in an object
+                    if: {
+                        $in: [req.user?._id, "$subscribers.subscriber"] // here I am checking I as a user is in the list of following of this user 
+                    },
+                    then: true,
+                    else: false
+                 }
+            } // it will give you true if I am subscribed to the channel
+        },   
+    },
+    // now we want to project the fields we need to show in the response
+    {
+        $project: {
+            // we send 1 to show the field in the response
+            // _id: 1,
+            fullName: 1,
+            username: 1,
+            email: 1,
+            avatar: 1,
+            coverImage: 1,
+            totalSubscribers: 1,
+            totalSubscribedTo: 1,
+            isSubscribed: 1
+    }}
+]);
+
+// we are checking channel length here because the aggreagation pipeline returns an array of objects
+// so we are checking the length of the array to know if the channel is found or not
+if(channel.length === 0){
+    throw new ApiError(404, "channel not found");
+}
+
+// sending channel[0] as there will be one user matched with the username in the aggregation pipeline
+return res.status(200).json(new ApiResponse(200, channel[0], "User channel profile fetched successfully"));
+});
+
+export { registerUser, loginUser, logoutUser, updateAccessToken, changeCurrentPassword, getUserProfile, updateUserProfile, updateUserAvatar, getUserChannelProfile };   

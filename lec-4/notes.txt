@@ -183,7 +183,9 @@ HTTP STATUS code
 model link : https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj
 repo link : https://github.com/hiteshchoudhary/chai-backend/tree/main
 
+
 https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro
+https://www.mongodb.com/docs/manual/aggregation/  -- aggregation pipeline
 pulsemcp.com
 mcpappstore
 
