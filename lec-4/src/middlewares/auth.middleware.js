@@ -32,3 +32,6 @@ export const verifyJwtToken = asyncHandler(async (req, res, next) => {
     }
 
 });
+
+// alias used by other route files (tweet, video, etc.)
+export { verifyJwtToken as verifyJWT };
